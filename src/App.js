@@ -1,12 +1,15 @@
 import React from 'react';
 import './App.css';
-import Canvas from './components/canvas';
+import MainComponent from './components/MainComponent';
+import {BrowserRouter} from 'react-router-dom'
 
 function App() {
   return (
+    <BrowserRouter>
     <div>
-    <Canvas/>
+    <MainComponent/>
     </div>
+    </BrowserRouter>
   );
 }
 
