@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
-let v1=null,v2=null;
+import './graph.css'
+
+let v1=null,v2=null
 let adj=[]
-var delay=1000
+var delay=500
 let weights=[]
 var r=14
 var INT_MAX=100000
-var color1='rgb(0, 204, 0)';
+let parent=[]
+let color1='rgb(0, 204, 0)';
+let done=false
+let timeouts=[]
 export class ShortestPath extends Component {
     constructor(props) {
         super(props)
@@ -17,6 +22,9 @@ export class ShortestPath extends Component {
         }
     }
 
+    componentDidMount(){
+//        this.generateRandomGraph()
+    }
     randomWeights(){
         for(let i=0;i<this.state.edges.length;i++)
         weights[i]=getRandomInt(1,50);
@@ -28,16 +36,19 @@ export class ShortestPath extends Component {
         weights.push(getRandomInt(1,50))
         this.forceUpdate()
     }
-        getMousePosition(event) { 
-        let x = event.clientX;//this.refs.svg.style.marginLeft ;
-        let y = event.clientY-this.refs.svg.style.marginTop ;
+    getMousePosition(event)
+    {
+        this.reset()
+        done=false
+        let x = event.clientX-this.refs.svg.getBoundingClientRect().left ;
+        let y = event.clientY-this.refs.svg.getBoundingClientRect().top;
         for(let i=0;i<this.state.points.length;i++)
         {
             let x1=this.state.points[i].x;
             let y1=this.state.points[i].y;
             let dist=(x-x1)*(x-x1)+(y-y1)*(y-y1);
             if(dist<=1000)
-                return;
+                return false;
         }
         this.setState((prev)=>{
             points:prev.points.push({x:x,y:y})
@@ -48,13 +59,17 @@ export class ShortestPath extends Component {
     }
 
     changeSrc(e){
+        this.reset()
+        done=false
         let x=document.getElementById('src').value
         this.setState({
             src:x
         })
     }
 
-    drawLine(e,idx){
+    drawLine(idx){
+        this.reset()
+        done=false
         let u=document.getElementById(`point${idx}`);
         u.style.fill='red';
         if(v1===null)
@@ -62,9 +77,9 @@ export class ShortestPath extends Component {
         else {
             v2=idx;
             u=document.getElementById(`point${v1}`);
-            u.style.fill='orange';
+            u.style.fill='#000';
             u=document.getElementById(`point${v2}`);
-            u.style.fill='orange';
+            u.style.fill='#000';
             for(let i=0;i<this.state.edges.length;i++)
             {
                 if(this.state.edges[i].u===v1 && this.state.edges[i].v===v2)
@@ -76,7 +91,7 @@ export class ShortestPath extends Component {
                 {
                     v1=null
                     v2=null
-                    return;
+                    return
                 }
             }
             if(v1===v2)
@@ -102,8 +117,10 @@ export class ShortestPath extends Component {
     }
 
     reset(){
+        done=false
         for(let i=0;i<this.state.points.length;i++){
-            document.getElementById(`point${i}`).style.fill='orange'
+            if(document.getElementById(`point${i}`).style.fill!=='red')
+            document.getElementById(`point${i}`).style.fill='#000'
         }
         for(let i=0;i<this.state.edges.length;i++)
         {
@@ -113,9 +130,11 @@ export class ShortestPath extends Component {
         {
             document.getElementById(`dist${i}`).textContent='∞';
         }
+        parent=[]
         this.forceUpdate();
     }
     clear(){
+        done=false
         this.setState({
             points:[],
             edges:[],
@@ -125,8 +144,73 @@ export class ShortestPath extends Component {
             v2=null
             adj=[]
             weights=[]
+            parent=[]
         })
         this.forceUpdate();
+    }
+
+    //GENERATE RANDOM GRAPH
+    generateRandomGraph(){
+        let lx=this.refs.svg.getBoundingClientRect().left+15
+        let rx=this.refs.svg.getBoundingClientRect().left+this.refs.svg.clientWidth-15;
+
+        let ly=this.refs.svg.getBoundingClientRect().top+15
+        let ry=this.refs.svg.getBoundingClientRect().top+this.refs.svg.clientHeight-15;
+        let n=getRandomInt(5,12)
+        let i;
+        for(i=1;i<=n;i++)
+        {
+            let flag;
+            setTimeout(() => {
+                flag=this.getMousePosition({clientX:getRandomInt(lx,rx),clientY:getRandomInt(ly,ry)})
+            }, i*delay);
+            if(flag===false)
+            i--;
+        }
+        for(let j=1;j<=1.1*n;j++)
+        {
+            setTimeout(() => {
+                let aq=getRandomInt(0,n-1)
+                this.drawLine(aq)
+                aq=getRandomInt(0,n-1)
+                this.drawLine(" "+aq)
+            }, i*delay);
+            i++;
+        }
+    }
+
+    showPath(s){
+        if(done===false)
+        return
+        let i=parent[s]
+        document.getElementById(`point${s}`).style.fill='yellow'
+        document.getElementById(`index${s}`).style.fill='black'
+        if(typeof i==="undefined")
+        return
+        while(i.vertex!==-1)
+        {
+            document.getElementById(`edge${i.edgeNo}`).style.stroke='yellow'
+            document.getElementById(`point${i.vertex}`).style.fill='yellow'
+            document.getElementById(`index${i.vertex}`).style.fill='black'
+            i=parent[i.vertex]
+        }
+    }
+
+    removePath(s){
+        if(done===false)
+        return
+        let i=parent[s]
+        document.getElementById(`point${s}`).style.fill=color1
+        document.getElementById(`index${s}`).style.fill='white'
+        if(typeof i==="undefined")
+        return
+        while(i.vertex!==-1)
+        {
+            document.getElementById(`edge${i.edgeNo}`).style.stroke='blue'
+            document.getElementById(`point${i.vertex}`).style.fill=color1
+            document.getElementById(`index${i.vertex}`).style.fill='white'
+            i=parent[i.vertex]
+        }
     }
 
     //DJIKSTRA'S SHORTEST PATH ALGORITHM
@@ -135,7 +219,7 @@ export class ShortestPath extends Component {
         // Initialize min value 
         let min = INT_MAX, min_index; 
         for (let v = 0; v < this.state.points.length; v++) 
-            if (sptSet[v] == false && dist[v] <= min) 
+            if (sptSet[v] === false && dist[v] <= min) 
                 {
                     min = dist[v]
                     min_index = v;
@@ -143,6 +227,7 @@ export class ShortestPath extends Component {
         return min_index;
     }
     dijkstraAnimations(s){
+        this.reset()
         let ar=[]
         for(let i=0;i<this.state.points.length;i++)
         {
@@ -161,9 +246,11 @@ export class ShortestPath extends Component {
         vis[i]=false;
         let animations=[]
         let dist=[]
+        parent=[]
         for(let i=0;i<this.state.points.length;i++)
         dist[i]=100000
         dist[s]=0
+        parent[s]={vertex:-1,edgeNo:-1}
         animations.push({
             x:s,
             y:0,
@@ -172,6 +259,8 @@ export class ShortestPath extends Component {
         for(let it=0;it<this.state.points.length;it++)
         {
             let u=this.minDist(dist,vis)
+            if(dist[u]===INT_MAX)
+            return animations;
             vis[u]=true
             animations.push({
                 x:u,
@@ -182,11 +271,17 @@ export class ShortestPath extends Component {
             {
                 if(!vis[v] && ar[u][v].wt && dist[u]+ar[u][v].wt<dist[v])
                 {
+                    parent[v]={vertex:u,edgeNo:ar[u][v].edgeNo}
                     dist[v]=dist[u]+ar[u][v].wt
                     animations.push({
                         x:ar[u][v].edgeNo,
                         y:-1,
                         color:'edge'
+                    })
+                    animations.push({
+                        x:ar[u][v].edgeNo,
+                        y:-1,
+                        color:'shrinkEdge'
                     })
                     animations.push({
                         x:v,
@@ -201,45 +296,72 @@ export class ShortestPath extends Component {
 
     dijkstra(s){
         if(s>=this.state.points.length)
-        return;
+        return
+        if(s==="" && s!=='0')
+        {
+            alert("Enter a source vertex")
+            return
+        }
+        for(let i=0;i<s.length;i++)
+        {
+            if(s[i]!=='0' && s[i]!=='1' && s[i]!=='2' && s[i]!=='3' && s[i]!=='4' && s[i]!=='5' && s[i]!=='6' && s[i]!=='7' && s[i]!=='8' && s[i]!=='9')
+            {
+                alert("Enter an integer as source vertex")
+                return
+            }
+        }
         const animations=this.dijkstraAnimations(s)
         let len=animations.length
         for(let i=0;i<len;i++)
         {
             if(animations[i].color==='edge'){
-                setTimeout(() => {
+                let tm=setTimeout(() => {
                     let q=document.getElementById(`edge${animations[i].x}`)
                     q.style.stroke='blue'
-                }, i*delay);
+                    q.style.strokeWidth='5'
+                    }, i*delay);
+                timeouts.push(tm)
+            }
+            else if(animations[i].color==='shrinkEdge')
+            {
+                let tm=setTimeout(() => {
+                    let q=document.getElementById(`edge${animations[i].x}`)
+                    q.style.stroke='blue'
+                    q.style.strokeWidth='2'
+                    }, i*delay);
+                timeouts.push(tm)
             }
             else if(animations[i].color==='setdist')
             {
-                setTimeout(() => {
+                let tm=setTimeout(() => {
                     let q=document.getElementById(`point${animations[i].x}`)
                     q.style.fill='blue'
                     q=document.getElementById(`dist${animations[i].x}`);
                     q.textContent=animations[i].y
                     
                 }, i*delay);
+                timeouts.push(tm);
             }
             else
             {
-                setTimeout(() => {
+                let tm=setTimeout(() => {
                     let q=document.getElementById(`point${animations[i].x}`)
                     q.style.fill=color1
                 }, i*delay);
+                timeouts.push(tm);
             }
         }
+        done=true
     }
     render() {
         var pts=this.state.points.map((x,idx)=>{
             return(
-            <circle key={"point"+idx} id={"point"+idx} cx={x.x} cy={x.y} r={r} stroke="black" onClick={(event)=>this.drawLine(event,idx)} strokeWidth=".5" style={{fill:"orange",zIndex:'1',transition:'all .2s linear',cursor:'pointer'}} />
+            <circle key={"point"+idx} id={"point"+idx} cx={x.x} cy={x.y} r={r} stroke="black" onClick={(event)=>this.drawLine(idx)} strokeWidth="2" style={{fill:"#000",transition:'all .2s linear',cursor:'pointer'}} onMouseOver={()=>this.showPath(idx)} onMouseOut={()=>this.removePath(idx)}/>
             )
         })
         var ptsidx=this.state.points.map((pt,idx)=>{
             return(
-                <text  key={"index"+idx} id={"index"+idx} fontSize="14" fontFamily="Arial" x={pt.x-4} y={pt.y+4} onClick={(event)=>this.drawLine(event,idx)} style={{zIndex:'1',fill:"#fff",transition:'all .2s linear'}}>{idx}</text>
+                <text key={"index"+idx} id={"index"+idx} fontSize="14" fontFamily="Arial" x={pt.x-4} y={pt.y+4} onClick={(event)=>this.drawLine(idx)} style={{fill:"#fff",transition:'all .2s linear',cursor:'pointer'}} onMouseOver={()=>this.showPath(idx)} onMouseOut={()=>this.removePath(idx)}>{idx}</text>
             )
         })
         var lines=this.state.edges.map((q,idx)=>{
@@ -257,23 +379,27 @@ export class ShortestPath extends Component {
                 <text key={"dist"+idx} id={"dist"+idx} fontSize='14' fontFamily='Arial' fill='#000' x={x.x+r+2} y={x.y+r+2}>&infin;</text>
             )
         })
+        
         return (
-            <div>
-            <svg paintOrder='markers' ref='svg' width={window.innerWidth} height="400" style={{border:'1px dotted black',backgroundColor:'rgb(251, 250, 255)',cursor:'crosshair'}} onClick={(event)=>this.getMousePosition(event)}>
+        <div>
+            <center>
+            <button className="button button4" onClick={()=>this.dijkstra(this.state.src)}>Djikstra's Algorithm</button>
+            <button className="button button4" onClick={()=>this.randomWeights()}>Randomize edge weights</button>
+            <button className="button button4" onClick={()=>this.reset()}>Reset</button>
+            <button className="button button4" onClick={()=>this.clear()}>Clear Canvas</button>
+            <text style={{fontFamily:'Georgia'}}>&nbsp;&nbsp;&nbsp;Source/Starting vertex&nbsp;</text>
+            <input type="text" id="src" value={this.state.src} style={{width:'25px'}} onChange={(e)=>this.changeSrc(e)} />
+            </center>
+            <center>
+            <svg paintOrder='markers' ref='svg' width={window.innerWidth*.995} height={window.innerHeight*.91} style={{border:'2px solid black',backgroundColor:'#dddddd',cursor:'crosshair'}} onClick={(event)=>this.getMousePosition(event)}>
+            {dists}
+            {edgeWeights}
+            {lines}
             {pts}
             {ptsidx}
-            {lines}
-            {edgeWeights}
-            {dists}
             </svg>
-            <br/>
-            <button onClick={()=>this.dijkstra(this.state.src)}>Djikstra's Algorithm</button>
-            <button onClick={()=>this.randomWeights()}>Randomize edge weights</button>
-            <button onClick={()=>this.reset()}>Reset</button>
-            <button onClick={()=>this.clear()}>Clear Canvas</button>
-            &nbsp;&nbsp;&nbsp;Enter source vertex &nbsp;
-            <input type="text" id="src" value={this.state.src} onChange={(e)=>this.changeSrc(e)} />
-            </div>
+            </center>
+        </div>
         )
     }
 }

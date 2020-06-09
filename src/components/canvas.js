@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 let v1=null,v2=null;
 let adj=[]
-var delay=1000
+var delay=500
 var color1='rgb(0, 204, 0)';
 export class Canvas extends Component {
     constructor(props) {
@@ -15,8 +15,9 @@ export class Canvas extends Component {
     }
 
     getMousePosition(event) { 
-        let x = event.clientX;//this.refs.svg.style.marginLeft ;
-        let y = event.clientY-this.refs.svg.style.marginTop ;
+        this.reset()
+        let x = event.clientX-this.refs.svg.getBoundingClientRect().left ;
+        let y = event.clientY-this.refs.svg.getBoundingClientRect().top;
         for(let i=0;i<this.state.points.length;i++)
         {
             let x1=this.state.points[i].x;
@@ -39,6 +40,7 @@ export class Canvas extends Component {
     }
 
     drawLine(e,idx){
+        this.reset()
         let u=document.getElementById(`point${idx}`);
         u.style.fill='red';
         if(v1===null)
@@ -46,9 +48,9 @@ export class Canvas extends Component {
         else {
             v2=idx;
             u=document.getElementById(`point${v1}`);
-            u.style.fill='orange';
+            u.style.fill='#000';
             u=document.getElementById(`point${v2}`);
-            u.style.fill='orange';
+            u.style.fill='#000';
             for(let i=0;i<this.state.edges.length;i++)
             {
                 if(this.state.edges[i].u===v1 && this.state.edges[i].v===v2)
@@ -86,10 +88,12 @@ export class Canvas extends Component {
 
     reset(){
         for(let i=0;i<this.state.points.length;i++){
-            document.getElementById(`point${i}`).style.fill='orange'
+            if(document.getElementById(`point${i}`).style.fill==='blue' || document.getElementById(`point${i}`).style.fill===color1)
+            document.getElementById(`point${i}`).style.fill='#000'
         }
         for(let i=0;i<this.state.edges.length;i++)
         {
+            if(document.getElementById(`edge${i}`).style.stroke==='blue')
             document.getElementById(`edge${i}`).style.stroke='red'
         }
     }
@@ -140,11 +144,18 @@ export class Canvas extends Component {
                 {
                     vis[adj[x][i].vertex]=true;
                     queue.push(adj[x][i].vertex)
+                    
                     animations.push({
                         x:adj[x][i].edgeNo,
                         y:-1,
                         color:'edge'
                     })
+                    animations.push({
+                        x:adj[x][i].edgeNo,
+                        y:-1,
+                        color:'shrinkEdge'
+                    })
+
                     animations.push({
                         x:adj[x][i].vertex,
                         y:-1,
@@ -159,6 +170,7 @@ export class Canvas extends Component {
     bfs(s){
         if(s>=this.state.points.length)
         return;
+        this.reset()
         const animations=this.bfsAnimations(s)
         let len=animations.length
         for(let i=0;i<len;i++)
@@ -168,6 +180,16 @@ export class Canvas extends Component {
                 let x1=document.getElementById(`edge${animations[i].x}`)
                 setTimeout(() => {
                     x1.style.stroke='blue'
+                    x1.style.strokeWidth='5'
+                    x1.style.borderRadius='2'
+                }, i*delay);
+            }
+            else if(animations[i].color==='shrinkEdge')
+            {
+                let x1=document.getElementById(`edge${animations[i].x}`)
+                setTimeout(() => {
+                    x1.style.strokeWidth='2'
+                    x1.style.borderRadius='0'
                 }, i*delay);
             }
             else
@@ -197,6 +219,12 @@ export class Canvas extends Component {
                     y:-1,
                     color:'edge'
                 })
+                
+                animations.push({
+                    x:adj[s][i].edgeNo,
+                    y:-1,
+                    color:'shrinkEdge'
+                })
                 animations.push({
                     x:adj[s][i].vertex,
                     y:-1,
@@ -222,6 +250,7 @@ export class Canvas extends Component {
         if(s>=this.state.points.length)
         return;
         const animations=this.dfsAnimations(s)
+        this.reset()
         let len=animations.length
         for(let i=0;i<len;i++)
         {
@@ -230,6 +259,16 @@ export class Canvas extends Component {
                 let x1=document.getElementById(`edge${animations[i].x}`)
                 setTimeout(() => {
                     x1.style.stroke='blue'
+                    x1.style.strokeWidth='5'
+                    x1.style.borderRadius='2'
+                }, i*delay);
+            }
+            else if(animations[i].color==='shrinkEdge')
+            {
+                let x1=document.getElementById(`edge${animations[i].x}`)
+                setTimeout(() => {
+                    x1.style.strokeWidth='2'
+                    x1.style.borderRadius='0'
                 }, i*delay);
             }
             else
@@ -244,34 +283,39 @@ export class Canvas extends Component {
     render() {
         var pts=this.state.points.map((x,idx)=>{
             return(
-            <circle key={"point"+idx} id={"point"+idx} cx={x.x} cy={x.y} r="14" stroke="black" onClick={(event)=>this.drawLine(event,idx)} strokeWidth=".5" style={{fill:"orange",zIndex:'1',transition:'all .2s linear',cursor:'pointer'}} />
+            <circle key={"point"+idx} id={"point"+idx} cx={x.x} cy={x.y} r="14" stroke="black" onClick={(event)=>this.drawLine(event,idx)} strokeWidth="1.5" style={{fill:"#000",transition:'all .2s linear',cursor:'pointer'}} />
             )
         })
         var ptsidx=this.state.points.map((pt,idx)=>{
             return(
-                <text  key={"index"+idx} id={"index"+idx} fontSize="14" fontFamily="Arial" x={pt.x-4} y={pt.y+4} onClick={(event)=>this.drawLine(event,idx)} style={{zIndex:'1',fill:"#fff",transition:'all .2s linear'}}>{idx}</text>
+                <text  key={"index"+idx} id={"index"+idx} fontSize="14" fontFamily="Arial" x={pt.x-4} y={pt.y+4} onClick={(event)=>this.drawLine(event,idx)} style={{fill:"#fff",transition:'all .2s linear',cursor:'pointer'}}>{idx}</text>
             )
         })
         var lines=this.state.edges.map((q,idx)=>{
             return(
-                <line key={"edge"+idx} id={"edge"+idx} x1={this.state.points[q.u].x} y1={this.state.points[q.u].y} x2={this.state.points[q.v].x} y2={this.state.points[q.v].y} style={{stroke:'red',strokeWidth:'2',zIndex:'-1',transition:'all .2s linear'}} />
+                <line key={"edge"+idx} id={"edge"+idx} x1={this.state.points[q.u].x} y1={this.state.points[q.u].y} x2={this.state.points[q.v].x} y2={this.state.points[q.v].y} style={{stroke:'red',strokeWidth:'2',transition:'all .2s linear'}} />
             )
         })
 
         return (
             <div>
-            <svg paintOrder='markers' ref='svg' width={window.innerWidth} height="400" style={{border:'1px dotted black',backgroundColor:'rgb(251, 250, 255)',cursor:'crosshair'}} onClick={(event)=>this.getMousePosition(event)}>
+            <center>
+            <button className="button button4" onClick={()=>this.bfs(this.state.src)}>BFS</button>
+            <button className="button button4" onClick={()=>this.dfs(this.state.src)}>DFS</button>
+            <button className="button button4" onClick={()=>this.reset()}>Reset</button>
+            <button className="button button4" onClick={()=>this.clear()}>Clear Canvas</button>
+            <label style={{fontFamily:'Georgia'}}>&nbsp;&nbsp;&nbsp;Source/starting vertex &nbsp;</label>
+            <input type="text" style={{width:'25px'}} id="src" value={this.state.src} onChange={(e)=>this.changeSrc(e)} />
+            </center>
+            <center>
+            <svg paintOrder='markers' ref='svg' width={window.innerWidth*.995} height={window.innerHeight*0.91} style={{border:'2px solid black',backgroundColor:'#dddddd',cursor:'crosshair'}} onClick={(event)=>this.getMousePosition(event)}>
+            
+            {lines}
             {pts}
             {ptsidx}
-            {lines}
+            
             </svg>
-            <br/>
-            <button onClick={()=>this.bfs(this.state.src)}>BFS</button>
-            <button onClick={()=>this.dfs(this.state.src)}>DFS</button>
-            <button onClick={()=>this.reset()}>Reset</button>
-            <button onClick={()=>this.clear()}>Clear Canvas</button>
-            &nbsp;&nbsp;&nbsp;Enter source vertex &nbsp;
-            <input type="text" id="src" value={this.state.src} onChange={(e)=>this.changeSrc(e)} />
+            </center>
             </div>
         )
     }
