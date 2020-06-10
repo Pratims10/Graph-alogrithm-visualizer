@@ -211,10 +211,20 @@ export class MST extends Component {
                 color:'included'
             })
         }
+        let rt=arr[0]
+        for(let i=0;i<this.state.points.length;i++)
+        if(rt!==arr[i]) return []
         return animations
     }
 
     kruskal(){
+        this.reset()
+        if(this.state.points.length===0) return
+        if(this.state.points.length===1)
+        {
+            document.getElementById(`point${0}`).style.fill=color1
+            return
+        }
         const animations=this.kruskalAnimations()
         let len=animations.length
         for(let i=0;i<len;i++)
@@ -276,13 +286,19 @@ export class MST extends Component {
         return (
         <div>
             <center>
+            <h3>Kruskal's Minimal Spanning Tree Algoriithm</h3>
             <button className="button button4" onClick={()=>this.kruskal()}>Kruskal's Algorithm</button>
             <button className="button button4" onClick={()=>this.randomWeights()}>Randomize edge weights</button>
             <button className="button button4" onClick={()=>this.reset()}>Reset</button>
             <button className="button button4" onClick={()=>this.clear()}>Clear Canvas</button>
             </center>
             <center>
-            <svg paintOrder='markers' ref='svg' width={window.innerWidth*.995} height={window.innerHeight*.91} style={{border:'2px solid black',backgroundColor:'#dddddd',cursor:'crosshair'}} onClick={(event)=>this.getMousePosition(event)}>
+            <svg paintOrder='markers' ref='svg' width={window.innerWidth*.995} height={window.innerHeight*.88} style={{border:'2px solid black',backgroundColor:'#dddddd',cursor:'crosshair'}} onClick={(event)=>this.getMousePosition(event)}>
+            <rect>
+            <title>
+            1.Click to plot some points.&#13;2.Connect two points by clicking on them consecutively.&#13;3.Run the algo and Enjoy!!!
+            </title>
+            </rect>
             {edgeWeights}
             {lines}
             {pts}

@@ -300,6 +300,7 @@ export class Canvas extends Component {
         return (
             <div>
             <center>
+            <h3>Breadth First and Depth First Algorithm</h3>
             <button className="button button4" onClick={()=>this.bfs(this.state.src)}>BFS</button>
             <button className="button button4" onClick={()=>this.dfs(this.state.src)}>DFS</button>
             <button className="button button4" onClick={()=>this.reset()}>Reset</button>
@@ -308,8 +309,12 @@ export class Canvas extends Component {
             <input type="text" style={{width:'25px'}} id="src" value={this.state.src} onChange={(e)=>this.changeSrc(e)} />
             </center>
             <center>
-            <svg paintOrder='markers' ref='svg' width={window.innerWidth*.995} height={window.innerHeight*0.91} style={{border:'2px solid black',backgroundColor:'#dddddd',cursor:'crosshair'}} onClick={(event)=>this.getMousePosition(event)}>
-            
+            <svg paintOrder='markers' ref='svg' width={window.innerWidth*.995} height={window.innerHeight*0.88} style={{border:'2px solid black',backgroundColor:'#dddddd',cursor:'crosshair'}} onClick={(event)=>this.getMousePosition(event)}>
+            <rect>
+            <title>
+            1.Click to plot some points.&#13;2.Connect two points by clicking on them consecutively.&#13;3.Run the algo and Enjoy!!!
+            </title>
+            </rect>
             {lines}
             {pts}
             {ptsidx}
