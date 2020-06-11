@@ -62,3 +62,6 @@ rect {
 {
   font-family:'Georgia',cursive;
 }
+.draggable{
+  cursor:pointer
+}
