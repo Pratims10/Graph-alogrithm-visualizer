@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/Searching-Sorting-Visualizer/static/css/main.d8b92ed5.chunk.css",
-    "main.js": "/Searching-Sorting-Visualizer/static/js/main.c796dbb7.chunk.js",
-    "main.js.map": "/Searching-Sorting-Visualizer/static/js/main.c796dbb7.chunk.js.map",
-    "runtime-main.js": "/Searching-Sorting-Visualizer/static/js/runtime-main.56c3b42b.js",
-    "runtime-main.js.map": "/Searching-Sorting-Visualizer/static/js/runtime-main.56c3b42b.js.map",
-    "static/js/2.57bc323c.chunk.js": "/Searching-Sorting-Visualizer/static/js/2.57bc323c.chunk.js",
-    "static/js/2.57bc323c.chunk.js.map": "/Searching-Sorting-Visualizer/static/js/2.57bc323c.chunk.js.map",
-    "index.html": "/Searching-Sorting-Visualizer/index.html",
-    "precache-manifest.c80237d768029d86b07511433b98e07d.js": "/Searching-Sorting-Visualizer/precache-manifest.c80237d768029d86b07511433b98e07d.js",
-    "service-worker.js": "/Searching-Sorting-Visualizer/service-worker.js",
-    "static/css/main.d8b92ed5.chunk.css.map": "/Searching-Sorting-Visualizer/static/css/main.d8b92ed5.chunk.css.map",
-    "static/js/2.57bc323c.chunk.js.LICENSE": "/Searching-Sorting-Visualizer/static/js/2.57bc323c.chunk.js.LICENSE"
+    "main.css": "/Graph-alogrithm-visualizer/static/css/main.d8b92ed5.chunk.css",
+    "main.js": "/Graph-alogrithm-visualizer/static/js/main.92b40564.chunk.js",
+    "main.js.map": "/Graph-alogrithm-visualizer/static/js/main.92b40564.chunk.js.map",
+    "runtime-main.js": "/Graph-alogrithm-visualizer/static/js/runtime-main.c7b6be88.js",
+    "runtime-main.js.map": "/Graph-alogrithm-visualizer/static/js/runtime-main.c7b6be88.js.map",
+    "static/js/2.57bc323c.chunk.js": "/Graph-alogrithm-visualizer/static/js/2.57bc323c.chunk.js",
+    "static/js/2.57bc323c.chunk.js.map": "/Graph-alogrithm-visualizer/static/js/2.57bc323c.chunk.js.map",
+    "index.html": "/Graph-alogrithm-visualizer/index.html",
+    "precache-manifest.66465de340c0a6262706c845bc1aae59.js": "/Graph-alogrithm-visualizer/precache-manifest.66465de340c0a6262706c845bc1aae59.js",
+    "service-worker.js": "/Graph-alogrithm-visualizer/service-worker.js",
+    "static/css/main.d8b92ed5.chunk.css.map": "/Graph-alogrithm-visualizer/static/css/main.d8b92ed5.chunk.css.map",
+    "static/js/2.57bc323c.chunk.js.LICENSE": "/Graph-alogrithm-visualizer/static/js/2.57bc323c.chunk.js.LICENSE"
   },
   "entrypoints": [
-    "static/js/runtime-main.56c3b42b.js",
+    "static/js/runtime-main.c7b6be88.js",
     "static/js/2.57bc323c.chunk.js",
     "static/css/main.d8b92ed5.chunk.css",
-    "static/js/main.c796dbb7.chunk.js"
+    "static/js/main.92b40564.chunk.js"
   ]
 }
