@@ -544,7 +544,7 @@ export class ShortestPath extends Component {
         <div>
             <center>
             {window.location.href==='https://pratims10.github.io/Graph-alogrithm-visualizer/#/dijkstra'?<h3>Dijkstra's Shortest Path Algorithm</h3>:<h3>Prim's Minimal Spanning Tree Algorithm</h3>}
-            {window.location.href==='/https://pratims10.github.io/Graph-alogrithm-visualizer/#/dijkstra'?<button className="button button4" onClick={()=>this.dijkstra(this.state.src)}>Dijkstra's Algorithm</button> : <button className="button button4" onClick={()=>this.prim(this.state.src)}>Prim's Algorithm</button>}
+            {window.location.href==='https://pratims10.github.io/Graph-alogrithm-visualizer/#/dijkstra'?<button className="button button4" onClick={()=>this.dijkstra(this.state.src)}>Dijkstra's Algorithm</button> : <button className="button button4" onClick={()=>this.prim(this.state.src)}>Prim's Algorithm</button>}
 
             <button className="button button4" onClick={()=>this.randomWeights()}>Randomize edge weights</button>
             <button className="button button4" onClick={()=>this.reset()}>Reset</button>
