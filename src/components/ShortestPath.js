@@ -181,7 +181,7 @@ export class ShortestPath extends Component {
     }
 
     showPath(s){
-        if(window.location.pathname==='/PrimMST') return
+        if(window.location.href==='https://pratims10.github.io/Graph-alogrithm-visualizer/#/PrimMST') return
         if(done===false)
         return
         let i=parent[s]
@@ -199,7 +199,7 @@ export class ShortestPath extends Component {
     }
 
     removePath(s){
-        if(window.location.pathname==='/PrimMST') return
+        if(window.location.href==='https://pratims10.github.io/Graph-alogrithm-visualizer/#/PrimMST') return
         if(done===false)
         return
         let i=parent[s]
@@ -543,8 +543,8 @@ export class ShortestPath extends Component {
         return (
         <div>
             <center>
-            {window.location.pathname==='/dijkstra'?<h3>Dijkstra's Shortest Path Algorithm</h3>:<h3>Prim's Minimal Spanning Tree Algorithm</h3>}
-            {window.location.pathname==='/dijkstra'?<button className="button button4" onClick={()=>this.dijkstra(this.state.src)}>Dijkstra's Algorithm</button> : <button className="button button4" onClick={()=>this.prim(this.state.src)}>Prim's Algorithm</button>}
+            {window.location.href==='https://pratims10.github.io/Graph-alogrithm-visualizer/#/dijkstra'?<h3>Dijkstra's Shortest Path Algorithm</h3>:<h3>Prim's Minimal Spanning Tree Algorithm</h3>}
+            {window.location.href==='/https://pratims10.github.io/Graph-alogrithm-visualizer/#/dijkstra'?<button className="button button4" onClick={()=>this.dijkstra(this.state.src)}>Dijkstra's Algorithm</button> : <button className="button button4" onClick={()=>this.prim(this.state.src)}>Prim's Algorithm</button>}
 
             <button className="button button4" onClick={()=>this.randomWeights()}>Randomize edge weights</button>
             <button className="button button4" onClick={()=>this.reset()}>Reset</button>
@@ -555,7 +555,7 @@ export class ShortestPath extends Component {
             <center>
             <svg paintOrder='markers' ref='svg' width={window.innerWidth*.995} height={window.innerHeight*.88} style={{border:'2px solid black',backgroundColor:'#dddddd',cursor:'crosshair'}} onClick={(event)=>this.getMousePosition(event)} >
             {
-                window.location.pathname==='/dijkstra'?<rect><title>1.Click to plot some points.&#13;2.Connect two points by clicking on them consecutively.&#13;3.Run the algorithm. &#13;4.Hover on any vertex to see the shortest path from the root vertex.</title></rect> : <rect><title>1.Click to plot some points.&#13;2.Connect two points by clicking on them consecutively.&#13;3.Run the algo and Enjoy!!!</title></rect>
+                window.location.href==='https://pratims10.github.io/Graph-alogrithm-visualizer/#/dijkstra'?<rect><title>1.Click to plot some points.&#13;2.Connect two points by clicking on them consecutively.&#13;3.Run the algorithm. &#13;4.Hover on any vertex to see the shortest path from the root vertex.</title></rect> : <rect><title>1.Click to plot some points.&#13;2.Connect two points by clicking on them consecutively.&#13;3.Run the algo and Enjoy!!!</title></rect>
             }
             {dists}
             {edgeWeights}
