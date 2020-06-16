@@ -211,9 +211,12 @@ export class MST extends Component {
                 color:'included'
             })
         }
-        let rt=arr[0]
+        let rt=this.root(arr,0)
         for(let i=0;i<this.state.points.length;i++)
-        if(rt!==arr[i]) return []
+        if(rt!==this.root(arr,i)) {
+            alert(`${i} ${arr[i]} ${rt}`)
+            return []
+        }
         return animations
     }
 
