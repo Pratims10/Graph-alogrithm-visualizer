@@ -89,7 +89,6 @@ export class HomeComp extends Component {
                     <div className="col-2"></div>
                     <div className="col-8 box" >
                         <p style={{fontFamily:'Georgia'}}> The application is aimed to help the users better understand the famous algorithms on graph by visualizing the steps and realizing how the algorithm actually works. The graph is user generated and the edge weights of weighted graphs are randomly generated and can be changed by the click of a button.</p>
-                        <p>This aplication is created by Pratim Sarkar. <b>CodeChef</b>: pratims10(5 star:2157), <b>Codeforces</b>: pratims10(Expert:1733)</p>
                         <p>For any query/sugesstion/feedback, mail at: <b>pratimsarkar23@gmail.com</b></p>
                     </div>
                     <div className="col-2"></div>
